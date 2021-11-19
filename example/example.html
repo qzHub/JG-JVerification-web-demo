@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>JVerification</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Add this meta for https -->
+  <!-- 1.0.0 版本中已经将meta标签动态嵌入 不用手动写 -->
+  <meta name="referrer" content="always" />
+  
+  <script type="text/javascript" src="./jverification-web-debug.js"></script>
+   <!-- 移动一键登录必须接入crypto-js-->
+  <script type="text/javascript" src="./crypto-js.js"></script>
+  <!-- 如需支持联通一键登录，需单独引入 h5auth1.min.js-->
+  <script type="text/javascript"src="https://opencloud.wostore.cn/h5netauth/h5login/singleton/h5auth1.min.js"></script>
+	
+
+  <script type="text/javascript" src="./vconsole.min.js"></script>
+
+</head>
+
+<body>
+  <h1 id="jverification">JVerification example.</h1>
+  <button onclick="init()">初始化</button><br />
+  <button onclick="isInitSucc()">是否成功初始化</button><br />
+  <button onclick="getToken()">获取token</button><br />
+  <button onclick="getTokenFirst()">优先获取某运营商token，电信为例</button><br />
+  <button onclick="checkVerifyEnable()">当前网络环境是否支持获取token</button><br />
+  <button onclick="setCustomUIWithConfig()">一键登录UI设置</button><br />
+  <button onclick="loginAuth()">一键登录</button><br />
+  <button onclick="loginAuthDialog()">一键登录弹窗模式</button><br />
+</body>
+
+<script>
+  // init vConsole
+  var vConsole = new VConsole();
+
+  function init() {
+    window.JVerificationInterface.init({ 
+      appkey: "eb67142502ec9f5556875b9a", // 极光官网中创建应用后分配的 appkey，必填
+      debugMode: true,// 设置是否开启 debug 模式。true 则会打印更多的日志信息。设置 false 则只会输出 w、e 级别的日志
+      fail: function(data) { 
+        console.error("JVerificationInterface init fail:"+JSON.stringify(data))
+      }, success: function(data) { 
+        console.log("JVerificationInterface init success:"+JSON.stringify(data))
+      } })
+  }
+
+  function isInitSucc(params) {
+    // 是否成功初始化
+    var succ =window.JVerificationInterface.isInitSuccess()
+    alert(succ)
+  }
+
+
+  function getToken() {
+    // 获取运营商token，默认尝试顺序：移动>联通>电信
+    // 实际使用中建议在初始化成功回掉中调用此接口
+    window.JVerificationInterface.getToken({
+        fail: function(data)  { 
+        console.error("JVerificationInterface getToken fail:"+JSON.stringify(data))
+      }, success: function(data)  { 
+        var token = data.content;
+        console.log("JVerificationInterface getToken success:"+token)
+      } 
+      })
+  }
+
+  function getTokenFirst() {
+    // 修改获取运营商token尝试顺序，以下为优先尝试获取电信token示例
+    // 实际使用中建议在初始化成功回掉中调用此接口
+    window.JVerificationInterface.getToken({
+        operater:"CT",//可填 移动：CM，联通：CU，电信：CT
+        fail: function(data)  { 
+        console.error("JVerificationInterface getToken fail:"+JSON.stringify(data))
+      }, success: function(data)  { 
+        var token = data.content;
+        console.log("JVerificationInterface getToken success:"+token)
+      } 
+      })
+  }
+
+  function setCustomUIWithConfig(){
+    // 本地仅支持调整联通一键登录页的logo和应用名，其他运营商需要单独申请到运营商配置，请联系对应商务
+    window.JVerificationInterface.setCustomUIWithConfig({
+      logo:"https://opencloud.wostore.cn/h5netauth/h5auth_demo/img/logo3.png",
+      appName:"测试应用名称"
+    })
+  }
+
+  function loginAuth() {
+    // 一键登录接口，默认尝试顺序：移动>联调>电信
+    // 实际使用中建议在初始化成功回掉中调用此接口
+    window.JVerificationInterface.loginAuth({
+		operater:"CT",
+        fail: function(data)  { 
+        console.error("JVerificationInterface loginAuth fail:"+JSON.stringify(data))
+      }, success: function(data)  { 
+        var token = data.content;
+        console.log("JVerificationInterface loginAuth success:"+token)
+      } 
+      })
+  }
+
+  function loginAuthDialog() {
+    // 一键登录接口，默认尝试顺序：移动>联调>电信
+    // 实际使用中建议在初始化成功回掉中调用此接口
+    window.JVerificationInterface.loginAuth({
+		  type:"dialog",//可填全屏：full，弹窗：dialog，不填默认全屏
+        fail: function(data)  { 
+        console.error("JVerificationInterface loginAuth fail:"+JSON.stringify(data))
+      }, success: function(data)  { 
+        var token = data.content;
+        console.log("JVerificationInterface loginAuth success:"+token)
+      } 
+      })
+  }
+
+  function checkVerifyEnable() {
+    // 当前网络环境是否支持获取token
+    var enable =window.JVerificationInterface.checkVerifyEnable()
+    alert(enable)
+  }
+
+</script>
+
+</html>
