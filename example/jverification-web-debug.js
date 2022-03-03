@@ -14129,7 +14129,7 @@ exports.JGCons = {
         // 联通一键登录样式文件,废弃，2021/10/15
         // CU_LOGIN_SEC_CSS:"https://opencloud.wostore.cn/h5netauth/h5login/js/login_resources1.js",
         CU_UI: {
-            CU_LOGIN_LOGO: 'https://opencloud.wostore.cn/h5netauth/h5auth_demo/img/logo5.png',
+            CU_LOGIN_LOGO: 'https://opencloud.wostore.cn/h5netauth/resource/images/logo5.png',
             CU_APP_NAME: '应用'
         },
         // 联通资源加载是否成功单次检测时间间隔  
@@ -15426,7 +15426,7 @@ var OperaterCU = /** @class */ (function (_super) {
         // 添加联通 presign 签名方法，方法名必须指定为 authCuSign
         var script = document.createElement("script");
         script.type = "text/javascript";
-        var code = "function authCuSign(presign){var sign = JVerificationInterface._getCUSign(presign);return sign;};  function _cuGetTokenSuccess(resp) {JVerificationInterface._getCULoginTokenSuccess(resp)};  function _cuGetTokenFail(resp) {JVerificationInterface._getCULoginTokenFail(resp)}";
+        var code = "function authCuSign(presign){var sign = JVerificationInterface._getCUSign(presign);return sign;};  function _cuGetTokenSuccess(resp) {return new Promise((resolve, rejuct) => { JVerificationInterface._getCULoginTokenSuccess(resp);let data = {isClosePop:true,noticeMsg:'请重新输入',timeNotice:2000}; resolve(data);  });};  function _cuGetTokenFail(resp) {JVerificationInterface._getCULoginTokenFail(resp)}";
         try {
             script.appendChild(document.createTextNode(code));
         }
